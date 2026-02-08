@@ -1,0 +1,23 @@
+services:
+  # The Legacy Hardware Simulator
+  legacy-device:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM python:3.10-slim
+        WORKDIR /app
+        COPY sim/legacy_device.py .
+        CMD ["python", "legacy_device.py"]
+    ports:
+      - "9999:9999"
+
+  # Our C++ Gateway (LHIG)
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - legacy-device
+    environment:
+      - DEVICE_HOST=legacy-device
+      - DEVICE_PORT=9999
