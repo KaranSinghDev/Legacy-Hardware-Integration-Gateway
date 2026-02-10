@@ -6,7 +6,7 @@ namespace lhig {
 
 OpcuaServer::OpcuaServer() : running_(false) {
     server_ = UA_Server_new();
-    // We could add configuration here later
+    // I   add configuration here later
 }
 
 OpcuaServer::~OpcuaServer() {
