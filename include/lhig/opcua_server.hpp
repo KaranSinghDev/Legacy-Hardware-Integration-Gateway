@@ -1,10 +1,10 @@
 #ifndef LHIG_OPCUA_SERVER_HPP
 #define LHIG_OPCUA_SERVER_HPP
 
-#include <atomic>
 #include <thread>
+#include <atomic>
 
-// Forward declare the C struct to avoid including the C header here
+// Forward declaration
 struct UA_Server;
 
 namespace lhig {
@@ -17,17 +17,18 @@ public:
     void start();
     void stop();
 
-    // This is the API our main loop will use to push data
+    // Placeholder for Phase 3
     void updateVoltage(double voltage);
 
 private:
     void runLoop();
 
     UA_Server* server_;
-    std::atomic<bool> running_;
+    volatile bool running_; 
     std::thread server_thread_;
 };
 
-} 
+} // namespace lhig
 
-#endif
+#endif // LHIG_OPCUA_SERVER_HPP
+
