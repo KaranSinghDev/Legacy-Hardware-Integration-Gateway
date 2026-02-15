@@ -1,12 +1,17 @@
 #include "lhig/opcua_server.hpp"
-#include "open62541.h" 
+
+// CRITICAL CHANGE: Modular includes
+#include <open62541/server.h>
+#include <open62541/server_config_default.h>
+
 #include <iostream>
 
 namespace lhig {
 
 OpcuaServer::OpcuaServer() : running_(false) {
     server_ = UA_Server_new();
-    // I   add configuration here later
+    // CRITICAL CHANGE: Explicitly load default configuration (Port 4840)
+    UA_ServerConfig_setDefault(UA_Server_getConfig(server_));
 }
 
 OpcuaServer::~OpcuaServer() {
@@ -16,30 +21,31 @@ OpcuaServer::~OpcuaServer() {
 
 void OpcuaServer::start() {
     if (running_) return;
+    
     running_ = true;
-    // The server runs in its own thread so it doesn't block our main loop
+    std::cout << "[OPC UA] Starting Server on opc.tcp://0.0.0.0:4840" << std::endl;
+    
     server_thread_ = std::thread(&OpcuaServer::runLoop, this);
-    std::cout << "[OPC UA] Server started." << std::endl;
 }
 
 void OpcuaServer::stop() {
     if (!running_) return;
+    
+    std::cout << "[OPC UA] Stopping Server..." << std::endl;
     running_ = false;
+    
     if (server_thread_.joinable()) {
         server_thread_.join();
     }
-    std::cout << "[OPC UA] Server stopped." << std::endl;
+    std::cout << "[OPC UA] Server Stopped." << std::endl;
 }
 
-// This is the core server loop
 void OpcuaServer::runLoop() {
-    UA_Server_run(server_, &running_);
+    UA_Server_run(server_, (volatile UA_Boolean*)&running_);
 }
 
-// This function is how we will update the value on the server
 void OpcuaServer::updateVoltage(double voltage) {
-    // I have to Implement the logic to create and update the voltage node.
-    
+    // Phase 3 implementation
 }
 
 } // namespace lhig
