@@ -3,9 +3,9 @@
 
 #include <thread>
 #include <atomic>
+#include <open62541/types.h> // Include for UA_NodeId
 
-// Forward declaration
-struct UA_Server;
+struct UA_Server; // Forward declaration
 
 namespace lhig {
 
@@ -16,19 +16,18 @@ public:
 
     void start();
     void stop();
-
-    // Placeholder for Phase 3
     void updateVoltage(double voltage);
 
 private:
     void runLoop();
+    void createVoltageNode();
 
     UA_Server* server_;
     volatile bool running_; 
     std::thread server_thread_;
+    UA_NodeId voltageNodeId_;
 };
 
 } // namespace lhig
 
 #endif // LHIG_OPCUA_SERVER_HPP
-
