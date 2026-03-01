@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
-#include <string> // <--- THIS WAS THE MISSING LINE
+#include <string>
 #include <atomic>
 #include <csignal>
 
@@ -15,18 +15,14 @@ void signal_handler(int signum) {
     keep_running = false;
 }
 
-// Helper: Parse "VOLT:5.00" -> 5.00
 double parseVoltage(const std::string& raw) {
     try {
         size_t colonPos = raw.find(':');
         if (colonPos != std::string::npos && colonPos + 1 < raw.length()) {
-            std::string valStr = raw.substr(colonPos + 1);
-            return std::stod(valStr);
+            return std::stod(raw.substr(colonPos + 1));
         }
-    } catch (...) {
-        // In production, we would log a parsing error here
-    }
-    return -1.0; // Error value
+    } catch (...) {}
+    return -1.0; 
 }
 
 int main() {
@@ -44,15 +40,30 @@ int main() {
     lhig::LegacyClient client(host, port);
     lhig::OpcuaServer server;
 
-    if (!client.connect()) {
-        std::cerr << "Fatal: Could not connect to legacy device." << std::endl;
-        return 1;
-    }
-    
+    // Start OPC UA Server immediately, regardless of hardware connection status
     server.start();
 
+    // --- State-Aware Control Loop ---
     while (keep_running) {
+        
+        // Check State: Are we connected?
+        if (!client.isConnected()) {
+            std::cout << "[Gateway] Connection down. Attempting to connect..." << std::endl;
+            if (!client.connect()) {
+                // If it fails, wait 2 seconds and loop again
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                continue; 
+            }
+        }
+
+        // If we reach here, we are connected. Get the data.
         std::string response = client.sendCommand("READ:VOLT");
+        
+        if (response == "ERR:DISCONNECTED") {
+            std::cerr << "[Gateway] Connection lost during data transfer." << std::endl;
+            continue; // The loop will handle reconnection on the next pass
+        }
+
         double voltage = parseVoltage(response);
 
         if (voltage >= 0.0) {
