@@ -21,3 +21,5 @@ services:
     environment:
       - DEVICE_HOST=legacy-device
       - DEVICE_PORT=9999
+    ports:
+      - "4840:4840"

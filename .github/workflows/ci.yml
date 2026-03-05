@@ -1,0 +1,45 @@
+name: LHIG Integration Pipeline
+
+on:
+  push:
+    branches: [ "main", "master", "dev" ]
+  pull_request:
+    branches: [ "main", "master", "dev" ]
+
+jobs:
+  build-and-test:
+    name: Build & Integration Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Essential for the open62541 C++ library
+
+      - name: Start LHIG System (Docker Compose)
+        run: |
+          docker compose up -d --build
+          echo "Waiting 10 seconds for services to initialize..."
+          sleep 10
+          docker compose ps # Display running containers for debugging
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: 'pip'
+
+      - name: Install Test Dependencies
+        run: pip install -r benchmark/requirements.txt
+
+      - name: Execute Benchmark & Integration Tests
+        run: pytest -v benchmark/test_gateway.py
+
+      - name: Dump Docker Logs on Failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Teardown System
+        if: always()
+        run: docker compose down -v
