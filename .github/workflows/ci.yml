@@ -1,0 +1,46 @@
+name: LHIG Integration & Benchmark CI
+
+on:
+  push:
+    branches: [ "Release", "Build" ]
+  pull_request:
+    branches: [ "Release", "Build" ]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive # Critical for open62541
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Benchmark Dependencies
+        run: pip install -r benchmark/requirements.txt
+
+      - name: Start Gateway & Simulator (Docker Compose)
+        # --detach runs in background
+        run: docker compose up --build --detach
+
+      - name: Wait for System Initialization
+        # Give the C++ server a few seconds to compile and start listening
+        run: sleep 10
+
+      - name: Verify Containers are Running
+        run: docker compose ps
+
+      - name: Run OPC UA Benchmark Suite
+        run: pytest -v -s benchmark/test_gateway.py
+
+      - name: Print Gateway Logs on Failure
+        if: failure()
+        run: docker compose logs gateway
+
+      - name: Teardown
+        if: always()
+        run: docker compose down -v

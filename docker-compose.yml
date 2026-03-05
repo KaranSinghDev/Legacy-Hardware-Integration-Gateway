@@ -21,3 +21,6 @@ services:
     environment:
       - DEVICE_HOST=legacy-device
       - DEVICE_PORT=9999
+    # CRITICAL FIX: Expose the OPC UA port to the host
+    ports:
+      - "4840:4840"
