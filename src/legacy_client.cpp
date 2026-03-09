@@ -23,7 +23,7 @@ bool LegacyClient::connect() {
   if (is_connected_)
     return true;
 
-  struct hostent *server = gethostbyname(host_.c_str());
+  const struct hostent *server = gethostbyname(host_.c_str());
   if (server == NULL) {
     std::cerr << "[Client] ERROR, no such host: " << host_ << std::endl;
     return false;
@@ -41,8 +41,8 @@ bool LegacyClient::connect() {
   std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
   serv_addr.sin_port = htons(port_);
 
-  if (::connect(sock_fd_, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) <
-      0) {
+  if (::connect(sock_fd_, reinterpret_cast<struct sockaddr *>(&serv_addr),
+                sizeof(serv_addr)) < 0) {
     // Suppress error spam here, the main loop will handle the retry logic
     close(sock_fd_);
     sock_fd_ = -1;

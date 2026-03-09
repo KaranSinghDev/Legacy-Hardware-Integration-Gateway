@@ -38,9 +38,8 @@ void OpcuaServer::stop() {
 }
 
 void OpcuaServer::runLoop() {
-  UA_Server_run(server_, (volatile UA_Boolean *)&running_);
+  UA_Server_run(server_, reinterpret_cast<volatile UA_Boolean *>(&running_));
 }
-
 void OpcuaServer::createVoltageNode() {
   UA_VariableAttributes attr = UA_VariableAttributes_default;
   UA_Double initialValue = 0.0;
