@@ -7,21 +7,21 @@ namespace lhig {
 
 class LegacyClient {
 public:
-    LegacyClient(const std::string& host, int port);
-    ~LegacyClient(); 
+  LegacyClient(const std::string &host, int port);
+  ~LegacyClient();
 
-    bool connect();
-    void disconnect();
-    std::string sendCommand(const std::string& command);
-    
-    // NEW: Allow main loop to check connection state
-    bool isConnected() const;
+  bool connect();
+  void disconnect();
+  std::string sendCommand(const std::string &command);
+
+  // NEW: Allow main loop to check connection state
+  bool isConnected() const;
 
 private:
-    std::string host_;
-    int port_;
-    int sock_fd_; 
-    bool is_connected_;
+  std::string host_;
+  int port_;
+  int sock_fd_;
+  bool is_connected_;
 };
 
 } // namespace lhig

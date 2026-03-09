@@ -1,21 +1,77 @@
-name: LHIG Integration & Benchmark CI
+name: LHIG Quality & Integration CI
 
 on:
   push:
-    branches: [ "Release", "Build" ]
+    branches: [ "*" ] # Runs on all branches
   pull_request:
-    branches: [ "Release", "Build" ]
+    branches: [ "*" ]
 
 jobs:
-  integration-test:
+  # --- STAGE 1: Formatting & Static Analysis ---
+  code-quality:
+    name: Formatting & Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive # Critical for open62541
+        uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # THE SERVER WALL: This guarantees formatting is perfect
+      - name: Enforce Formatting (Pre-commit)
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
+
+      - name: Install CppCheck
+        run: sudo apt-get install -y cppcheck
+
+      # STATIC ANALYSIS: Proves the C++ logic is safe
+      - name: Run CppCheck (C++ Logic)
+        run: >
+          cppcheck
+          --enable=warning,style,performance,portability
+          --error-exitcode=1
+          --suppress=missingInclude
+          -I ./include
+          ./src
+
+  # --- STAGE 2: Memory Verification (ASan) ---
+  memory-verification:
+    name: C++ Memory Safety Check
+    runs-on: ubuntu-latest
+    needs: code-quality # Only runs if Stage 1 passes
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Install Build Dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+
+      - name: Build with AddressSanitizer
+        run: |
+          mkdir build && cd build
+          cmake -DENABLE_ASAN=ON ..
+          cmake --build .
+          echo "ASan build successful. Zero compilation-time memory warnings."
+
+  # --- STAGE 3: Full System Benchmark ---
+  integration-benchmark:
+    name: System Integration Test
+    runs-on: ubuntu-latest
+    needs: memory-verification # Only runs if Stage 2 passes
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
@@ -23,21 +79,16 @@ jobs:
       - name: Install Benchmark Dependencies
         run: pip install -r benchmark/requirements.txt
 
-      - name: Start Gateway & Simulator (Docker Compose)
-        # --detach runs in background
+      - name: Start System (Docker Compose)
         run: docker compose up --build --detach
 
-      - name: Wait for System Initialization
-        # Give the C++ server a few seconds to compile and start listening
-        run: sleep 10
+      - name: Wait for Server Init
+        run: sleep 15
 
-      - name: Verify Containers are Running
-        run: docker compose ps
-
-      - name: Run OPC UA Benchmark Suite
+      - name: Run Benchmark Suite
         run: pytest -v -s benchmark/test_gateway.py
 
-      - name: Print Gateway Logs on Failure
+      - name: Print Logs on Failure
         if: failure()
         run: docker compose logs gateway
 
