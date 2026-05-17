@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: >-
+  If you use OpenBench in academic work, please cite it as below.
+title: OpenBench
+abstract: >-
+  OpenBench is a C++17 daemon that bridges legacy laboratory and
+  industrial instruments — SCPI bench instruments, serial sensors,
+  Modbus PLCs, and other TCP/text-protocol devices — to modern
+  observability stacks via OPC UA, MQTT, REST, and Prometheus.
+  Devices are described declaratively in YAML; no per-device code is
+  required.
+type: software
+license: AGPL-3.0-or-later
+authors:
+  - family-names: Singh
+    given-names: Karan
+    email: karansingh25822@gmail.com
+repository-code: https://github.com/KaranSinghDev/Legacy-Hardware-Integration-Gateway
+url: https://github.com/KaranSinghDev/Legacy-Hardware-Integration-Gateway
+keywords:
+  - opc-ua
+  - iec-62541
+  - scpi
+  - lab-automation
+  - industrial-iot
+  - legacy-hardware
+  - cpp17
+  - gateway
+  - data-acquisition
+version: "0.1.0"
+date-released: "2026-05-20"

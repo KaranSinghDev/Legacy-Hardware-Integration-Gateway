@@ -1,0 +1,11 @@
+OpenBench Authors
+=================
+
+This file lists the authors of OpenBench in chronological order of
+first contribution. The canonical machine-readable record is in
+CITATION.cff.
+
+When you submit a pull request that lands in the main branch, please
+add yourself to this list as part of the same commit.
+
+* Karan Singh <karansingh25822@gmail.com> — original author and maintainer (2026-present)
