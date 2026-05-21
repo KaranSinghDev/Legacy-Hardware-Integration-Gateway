@@ -10,7 +10,7 @@
 
 ---
 
-## The 30-second pitch
+## About OpenBench
 
 Every electronics lab, university research group, and hardware startup
 has the same hidden problem: an old multimeter, oscilloscope, or power
@@ -22,7 +22,7 @@ for the last twenty years. That script dies with the project.
 **OpenBench fixes this once.** Describe your instrument in a YAML file.
 OpenBench connects, translates in real time, and republishes the
 readings to OPC UA (the industrial standard), MQTT (the IoT standard),
-and your preferred dashboard — all at once. One small daemon, one
+and your preferred dashboard, all at once. One small daemon, one
 config file. The lab bench becomes a first-class citizen of the modern
 data world.
 
