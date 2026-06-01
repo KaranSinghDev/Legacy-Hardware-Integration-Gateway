@@ -169,7 +169,7 @@ Every push and PR runs through a three-stage CI pipeline
 
 ## License
 
-Legacy-Hardware-Integration-Gateway is licensed under the **GNU Affero General Public License
+Legacy Hardware Integration Gateway (LHIG) is licensed under the **GNU Affero General Public License
 v3 or later (AGPL-3.0-or-later)**. The full text is in
 [LICENSE](LICENSE). Third-party attributions are in [NOTICE](NOTICE)
 and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
