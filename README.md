@@ -1,4 +1,4 @@
-# OpenBench
+# OpenBench (A legacy Hardware Integration Gateway Tool)
 
 > **Plug-and-play for legacy lab benches.** A small C++17 daemon that
 > bridges your SCPI / serial / TCP-text instruments to OPC UA, MQTT,
@@ -10,7 +10,7 @@
 
 ---
 
-## About OpenBench
+## About 
 
 Every electronics lab, university research group, and hardware startup
 has the same hidden problem: an old multimeter, oscilloscope, or power
@@ -19,8 +19,8 @@ data into Grafana, InfluxDB, a Python notebook, or a SCADA dashboard,
 you write the same Python script that every other engineer has written
 for the last twenty years. That script dies with the project.
 
-**OpenBench fixes this once.** Describe your instrument in a YAML file.
-OpenBench connects, translates in real time, and republishes the
+**LHIG fixes this once.** Describe your instrument in a YAML file.
+It connects, translates in real time, and republishes the
 readings to OPC UA (the industrial standard), MQTT (the IoT standard),
 and your preferred dashboard, all at once. One small daemon, one
 config file. The lab bench becomes a first-class citizen of the modern
@@ -66,9 +66,9 @@ OpenBench occupies a specific niche. The honest comparison:
 | **[Telegraf](https://www.influxdata.com/time-series-platform/telegraf/)** | Excellent metrics collection with OPC UA & Modbus plugins | Metrics-focused; no SCPI input; not designed to bridge legacy protocols |
 | **[EPICS](https://epics-controls.org/) / [Tango Controls](https://www.tango-controls.org/)** | Full distributed control systems used at particle accelerators | Powerful but heavy; weeks of learning curve; overkill for a single bench |
 
-OpenBench is the only tool that treats a lab bench like a first-class
+This is the tool that treats a lab bench like a first-class
 citizen *and* speaks OPC UA cleanly enough for industrial users to
-adopt. When you outgrow OpenBench, EPICS/Tango are waiting — and
+adopt. When you outgrow it, EPICS/Tango are waiting — and
 OpenBench's OPC UA output can feed both via
 [EPICS-open62541](https://github.com/ISISComputingGroup/EPICS-open62541).
 
@@ -169,7 +169,7 @@ Every push and PR runs through a three-stage CI pipeline
 
 ## License
 
-OpenBench is licensed under the **GNU Affero General Public License
+Legacy-Hardware-Integration-Gateway is licensed under the **GNU Affero General Public License
 v3 or later (AGPL-3.0-or-later)**. The full text is in
 [LICENSE](LICENSE). Third-party attributions are in [NOTICE](NOTICE)
 and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
@@ -185,7 +185,7 @@ please reach out via the contact below.
 
 ## Citation
 
-If you use OpenBench in academic work, please cite it via the
+If you use LHIG in academic work, please cite it via the
 [CITATION.cff](CITATION.cff) file at the repository root. GitHub will
 render a "Cite this repository" widget on the project sidebar
 automatically.
