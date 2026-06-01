@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: >-
-  If you use OpenBench in academic work, please cite it as below.
-title: OpenBench
+  If you use Legacy Hardware Integration Gateway (LHIG) in academic work, please cite it as below.
+title: Legacy Hardware Integration Gateway (LHIG)
 abstract: >-
   OpenBench is a C++17 daemon that bridges legacy laboratory and
   industrial instruments — SCPI bench instruments, serial sensors,
